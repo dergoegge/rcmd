@@ -1,0 +1,8 @@
+.vagrant/
+env/
+
+.DS_Store
+Vagrantfile
+*.json
+rcmd
+provider
