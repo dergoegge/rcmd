@@ -10,7 +10,7 @@ fi
 vagrant plugin install vagrant-$1
 
 # save chosen provider
-echo $1 > $RCMD_PATH/provider
+echo $1 > $LOCAL_RCMD_PATH/provider
 
 # if ~/.rcmd/env/Vagrantfile already exists rename it to Vagrantfile_%timestamp%
 if [ -f $RCMD_PATH/env/Vagrantfile ]; then
