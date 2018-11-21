@@ -6,6 +6,14 @@ Prefix a command with `rcmd` to excecute it in a remote virtual environment.
 /bin/sh <(curl -s https://raw.githubusercontent.com/dergoegge/rcmd/master/install.sh)
 ```
 
+## Usage
+
+To execute a command in a remote environment:
+```bash
+rcmd "<command>"
+```
+This will automatically start a machine according to your Vagrantfile if it is not running already and then run your command. The established connection will be cached so subsequent calls are fast. 
+
 ## Providers
 Configure `rcmd` with your provider of choice:
 
@@ -13,13 +21,16 @@ Configure `rcmd` with your provider of choice:
 rcmd --configure provider <provider>
 ```
 
-If the command completes succesfull it generated a `Vagrantfile` template in the `~/.rcmd/env` directory for your chosen provider.
+If the command completes succesfully it generated a `Vagrantfile` template in the calling directory for your chosen provider.
 This file will have to be edited with your provider info.
 
-The environment in `~/.rcmd/env` will be used by `rcmd` as your default if there is no Vagrantfile present in the calling directory. 
+
+You can set up a default environment for your favourite provider in the `~/.rcmd/env` directory with:
+```bash
+rcmd --configure default-env <provider>
+```
 
 You can copy the default environment to your current location with:
-
 ```bash
 rcmd --init
 ```
@@ -29,8 +40,6 @@ or create a `Vagrantfile` from one of the provider templates with:
 ```bash
 rcmd --init <provider>
 ```
-
 Currently supported providers are `google` and `aws` using the vagrant plugins [vagrant-google](https://github.com/mitchellh/vagrant-google) and [vagrant-aws](https://github.com/mitchellh/vagrant-aws).
 
 *If no provider is configured the default `vagrant` provider is used.*
-
