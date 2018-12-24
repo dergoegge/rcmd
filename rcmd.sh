@@ -10,7 +10,7 @@ export PRINT_NORMAL=$(tput sgr0)
 
 # finds the .vagrant folder by moving up through the directory path
 # sets the $VAGRANT_PATH variable
-# exits if no .vagrant directory is found
+# exits if no .vagrant directory or Vagrantfile is found
 function set_vagrant_path() {
 	if [[ -d ./.vagrant || -f ./Vagrantfile ]]; then
 		mkdir -p ./.vagrant
@@ -30,13 +30,12 @@ function set_vagrant_path() {
 
 # starts the machine using vagrant up and generates the ssh config
 function start_machine() {
-	local provider="virtualbox"
+	local provider=$VAGRANT_DEFAULT_PROVIDER
+	[ -z $provider ] && provider="virtualbox"
 
 	if [ -f $VAGRANT_PATH/rcmd_provider ]; then
 		provider=$(cat $VAGRANT_PATH/rcmd_provider)
 	fi
-
-	[ -z $provider ] && provider=
 
 	vagrant up --provider=$provider && gen_ssh_config
 }
@@ -55,6 +54,7 @@ function ssh_rcmd() {
 			-o ControlMaster=auto \
 			-o ControlPath=$VAGRANT_PATH/rcmd_%r@%h:%p \
 			-o ControlPersist=yes \
+			-o RequestTTY=yes \
 			default \
 			"$*"
 	
