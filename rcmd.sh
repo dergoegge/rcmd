@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/bin/sh
 export RCMD_PATH=~/.rcmd
 export VAGRANT_PATH=./.vagrant
 export SUPPORTED_PROVIDERS=(google aws)
@@ -13,7 +12,8 @@ export PRINT_NORMAL=$(tput sgr0)
 # sets the $VAGRANT_PATH variable
 # exits if no .vagrant directory is found
 function set_vagrant_path() {
-	if [ -d ./.vagrant ]; then
+	if [[ -d ./.vagrant || -f ./Vagrantfile ]]; then
+		mkdir -p ./.vagrant
 		export VAGRANT_PATH=${PWD}/.vagrant
 		return
 	fi
@@ -30,22 +30,15 @@ function set_vagrant_path() {
 
 # starts the machine using vagrant up and generates the ssh config
 function start_machine() {
-	export PROVIDER=$VAGRANT_DEFAULT_PROVIDER
+	local provider="virtualbox"
 
 	if [ -f $VAGRANT_PATH/rcmd_provider ]; then
-		PROVIDER=$(cat $VAGRANT_PATH/rcmd_provider)
+		provider=$(cat $VAGRANT_PATH/rcmd_provider)
 	fi
 
-	vagrant up --provider=$PROVIDER && gen_ssh_config
-}
+	[ -z $provider ] && provider=
 
-# checks if the ssh config file exists
-function check_ssh_config() {
-	if [ ! -f $VAGRANT_PATH/rcmd_ssh_config ] ; then
-		return 1
-	fi
-
-	return 0
+	vagrant up --provider=$provider && gen_ssh_config
 }
 
 # generates the ssh config file using vagrant ssh-config
@@ -56,7 +49,7 @@ function gen_ssh_config() {
 
 # executes a command on the remote host
 function ssh_rcmd() {
-	check_ssh_config || gen_ssh_config
+	[ -f $VAGRANT_PATH/rcmd_ssh_config ] || gen_ssh_config
 
 	ssh -F $VAGRANT_PATH/rcmd_ssh_config \
 			-o ControlMaster=auto \
