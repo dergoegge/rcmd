@@ -3,7 +3,8 @@ PRINT_NORMAL=$(tput sgr0)
 RCMD_PATH=~/.rcmd
 
 if [ -d $RCMD_PATH ]; then
-	echo "rcmd is already installed"
+	# .rcmd is already installed
+	cd $RCMD_PATH && git pull
 	exit
 fi
 
