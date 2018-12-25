@@ -43,3 +43,12 @@ rcmd --init <provider>
 Currently supported providers are `google` and `aws` using the vagrant plugins [vagrant-google](https://github.com/mitchellh/vagrant-google) and [vagrant-aws](https://github.com/mitchellh/vagrant-aws).
 
 *If no provider is configured the default `vagrant` provider is used.*
+
+## Autocompletion
+
+Enable autocompletion by:
+```bash
+source ~/.rcmd/cli/autocompletion.sh
+```
+
+Currently the first word behind `rcmd` will autocomplete to a command available on the remote machine, everything after that will autocomplete to files and dirs.
